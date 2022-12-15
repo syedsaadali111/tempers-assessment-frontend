@@ -1,8 +1,18 @@
 <template>
-	<div v-if="loading">Loading..</div>
-	<div v-else-if="error">Error fetching posts</div>
-	<div v-else>
-		<PostsList />
+	<div class="bg-secondary h-screen text-gray-900 p-8">
+		<div v-if="loading" class="h-full flex items-center justify-center">
+			<span data-test="loading" class="text-4xl text-primary">
+				Loading...
+			</span>
+		</div>
+		<div v-else-if="error" class="h-full flex items-center justify-center">
+			<span data-test="error" class="text-4xl text-primary">
+				Error fetching posts :(
+			</span>
+		</div>
+		<div v-else>
+			<PostsList v-model:posts="posts" />
+		</div>
 	</div>
 </template>
 
@@ -14,9 +24,7 @@
 
 	const postFetcher = async (url) => {
 		//get first 5 posts from response
-		const res = (await (await fetch(url)).json()).slice(0, 5);
-		console.warn('res', res);
-		return res;
+		return (await (await fetch(url)).json()).slice(0, 5);
 	};
 
 	const {
