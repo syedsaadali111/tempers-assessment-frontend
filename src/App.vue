@@ -1,17 +1,34 @@
 <template>
-	<div class="bg-secondary h-screen text-gray-900 p-8">
-		<div v-if="loading" class="h-full flex items-center justify-center">
+	<div
+		class="bg-secondary min-h-screen text-gray-900 p-8 relative overflow-hidden"
+	>
+		<div
+			v-if="loading"
+			class="flex items-center justify-center inset-0 absolute"
+		>
 			<span data-test="loading" class="text-4xl text-primary">
 				Loading...
 			</span>
 		</div>
-		<div v-else-if="error" class="h-full flex items-center justify-center">
+		<div
+			v-else-if="error"
+			class="flex items-center justify-center inset-0 absolute"
+		>
 			<span data-test="error" class="text-4xl text-primary">
 				Error fetching posts :(
 			</span>
 		</div>
-		<div v-else>
-			<PostsList v-model:posts="posts" />
+		<div v-else class="flex gap-40">
+			<PostsList
+				v-model:posts="posts"
+				v-model:action-stack="actionStack"
+				class="w-1/2"
+			/>
+			<ActionsHistory
+				v-model:posts="posts"
+				v-model:action-stack="actionStack"
+				class="w-1/2 h-fit"
+			/>
 		</div>
 	</div>
 </template>
@@ -19,6 +36,8 @@
 <script setup>
 	import PostsList from './components/PostsList.vue';
 	import { useFetch } from './composables/useFetch';
+	import ActionsHistory from './components/ActionsHistory.vue';
+	import { ref } from 'vue';
 
 	const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
 
@@ -33,6 +52,8 @@
 		loading,
 		makeRequest: fetchPosts,
 	} = useFetch(postFetcher);
+
+	const actionStack = ref([]);
 
 	fetchPosts(POSTS_URL);
 </script>
