@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import ActionsHistory from '../components/ActionsHistory.vue';
 import { mount } from '@vue/test-utils';
 
@@ -47,29 +47,27 @@ const mockActionStack = [
 ];
 
 describe('ActionsHistory', () => {
-	it('renders actions stack properly', () => {
-		const wrapper = mount(ActionsHistory, {
+	let wrapper;
+	beforeEach(() => {
+		wrapper = mount(ActionsHistory, {
 			props: {
 				posts: mockPosts,
 				actionStack: mockActionStack,
 			},
 		});
+	});
 
-		expect(wrapper.findAll('[data-test="action"]')).toHaveLength(
-			mockActionStack.length
-		);
-
+	afterEach(() => {
 		wrapper.unmount();
 	});
 
-	it('emits stack update event with updated action stack', () => {
-		const wrapper = mount(ActionsHistory, {
-			props: {
-				posts: mockPosts,
-				actionStack: mockActionStack,
-			},
-		});
+	it('renders actions stack properly', () => {
+		expect(wrapper.findAll('[data-test="action"]')).toHaveLength(
+			mockActionStack.length
+		);
+	});
 
+	it('emits stack update event with updated action stack', () => {
 		//click second to last time travel button
 		wrapper
 			.findAll('[data-test="time-travel"]')
@@ -84,18 +82,9 @@ describe('ActionsHistory', () => {
 		expect(newStack).toStrictEqual([
 			mockActionStack[mockActionStack.length - 1],
 		]);
-
-		wrapper.unmount();
 	});
 
 	it("emits posts update event with action's snapshot", () => {
-		const wrapper = mount(ActionsHistory, {
-			props: {
-				posts: mockPosts,
-				actionStack: mockActionStack,
-			},
-		});
-
 		//click first time travel button
 		wrapper.findAll('[data-test="time-travel"]')[0].trigger('click');
 

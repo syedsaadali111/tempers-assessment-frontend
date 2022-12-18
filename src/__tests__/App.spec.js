@@ -1,34 +1,61 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import * as useFetchModule from '../composables/useFetch';
 import App from '../App.vue';
 import PostsList from '../components/PostsList.vue';
 
-describe('App', () => {
-	let useFetchSpy;
-	let wrapper;
-	beforeAll(() => {
-		useFetchSpy = vi
-			.spyOn(useFetchModule, 'useFetch')
-			.mockImplementation(() => {
-				return {
-					posts: [],
-					loading: false,
-					error: null,
-					makeRequest: () => {},
-				};
-			});
-		wrapper = mount(App);
+const getSpyOnComposable = (implementation) => {
+	return vi.spyOn(useFetchModule, 'useFetch').mockImplementation(() => {
+		return implementation;
 	});
-	afterAll(() => {
-		vi.restoreAllMocks();
+};
+
+describe('App', () => {
+	it('uses useFetch composable once', () => {
+		const useFetchSpy = getSpyOnComposable({
+			posts: [],
+			loading: false,
+			error: null,
+			makeRequest: () => {},
+		});
+		const wrapper = mount(App);
+		expect(useFetchSpy).toBeCalledTimes(1);
 		wrapper.unmount();
 	});
 
-	it('uses useFetch composable once', () => {
-		expect(useFetchSpy).toBeCalledTimes(1);
-	});
 	it('renders posts list component', () => {
+		getSpyOnComposable({
+			posts: [],
+			loading: false,
+			error: null,
+			makeRequest: () => {},
+		});
+		const wrapper = mount(App);
 		expect(wrapper.findComponent(PostsList).exists()).toBe(true);
+		wrapper.unmount();
+	});
+
+	it('renders loading ui on loading', () => {
+		getSpyOnComposable({
+			posts: [],
+			loading: true,
+			error: null,
+			makeRequest: () => {},
+		});
+		const wrapper = mount(App);
+		expect(wrapper.find('[data-test="loading"]').exists()).toBe(true);
+		wrapper.unmount();
+	});
+
+	it('renders error ui on error', () => {
+		getSpyOnComposable({
+			posts: [],
+			loading: false,
+			error: { message: 'dummy error' },
+			makeRequest: () => {},
+		});
+		const wrapper = mount(App);
+		expect(wrapper.find('[data-test="error"]').exists()).toBe(true);
+		wrapper.unmount();
 	});
 });

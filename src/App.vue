@@ -4,6 +4,7 @@
 	>
 		<div
 			v-if="loading"
+			data-test="loading"
 			class="flex items-center justify-center inset-0 absolute"
 		>
 			<span data-test="loading" class="text-4xl text-primary">
@@ -12,6 +13,7 @@
 		</div>
 		<div
 			v-else-if="error"
+			data-test="error"
 			class="flex items-center justify-center inset-0 absolute"
 		>
 			<span data-test="error" class="text-4xl text-primary">

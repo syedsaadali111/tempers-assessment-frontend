@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import PostsList from '../components/PostsList.vue';
 import { mount } from '@vue/test-utils';
 
@@ -25,16 +25,6 @@ const mockPosts = [
 	},
 ];
 
-//utility func. to mount component with mock posts as prop
-const mountComponent = () => {
-	return mount(PostsList, {
-		props: {
-			posts: mockPosts,
-			actionStack: [],
-		},
-	});
-};
-
 //asserts swap of first two values
 const assertPostsSwap = (resultingArray, originalArray) => {
 	//emits array of the same length
@@ -45,15 +35,25 @@ const assertPostsSwap = (resultingArray, originalArray) => {
 };
 
 describe('PostsList', () => {
-	it('renders posts properly', () => {
-		const wrapper = mountComponent();
-		expect(wrapper.findAll('[data-test="post-item"]')).toHaveLength(5);
+	let wrapper;
+	beforeEach(() => {
+		wrapper = mount(PostsList, {
+			props: {
+				posts: mockPosts,
+				actionStack: [],
+			},
+		});
+	});
+
+	afterEach(() => {
 		wrapper.unmount();
 	});
 
-	it('emits correct post array on move up', () => {
-		const wrapper = mountComponent();
+	it('renders posts properly', () => {
+		expect(wrapper.findAll('[data-test="post-item"]')).toHaveLength(5);
+	});
 
+	it('emits correct post array on move up', () => {
 		//click move up button on second post
 		wrapper.find('[data-test="move-up"]').trigger('click');
 
@@ -63,13 +63,9 @@ describe('PostsList', () => {
 
 		const resultingArray = emittedEvents[0][0];
 		assertPostsSwap(resultingArray, mockPosts);
-
-		wrapper.unmount();
 	});
 
 	it('emits correct post array on move down', () => {
-		const wrapper = mountComponent();
-
 		//click move down button on first post
 		wrapper.find('[data-test="move-down"]').trigger('click');
 
@@ -79,13 +75,9 @@ describe('PostsList', () => {
 
 		const resultingArray = emittedEvents[0][0];
 		assertPostsSwap(resultingArray, mockPosts);
-
-		wrapper.unmount();
 	});
 
 	it('emits correct action stack on move up', () => {
-		const wrapper = mountComponent();
-
 		//click move down button on first post
 		wrapper.find('[data-test="move-up"]').trigger('click');
 
@@ -102,13 +94,9 @@ describe('PostsList', () => {
 				snapshot: [...mockPosts],
 			},
 		]);
-
-		wrapper.unmount();
 	});
 
 	it('emits correct action stack on move down', () => {
-		const wrapper = mountComponent();
-
 		//click move down button on first post
 		wrapper.find('[data-test="move-down"]').trigger('click');
 
@@ -125,7 +113,5 @@ describe('PostsList', () => {
 				snapshot: [...mockPosts],
 			},
 		]);
-
-		wrapper.unmount();
 	});
 });
