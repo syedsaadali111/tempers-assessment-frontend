@@ -5,6 +5,12 @@
 		</h1>
 		<div class="p-6">
 			<div
+				v-if="!actionStack.length"
+				class="text-center italic text-gray-500"
+			>
+				No actions committed yet
+			</div>
+			<div
 				v-for="({ postId, fromIndex, toIndex }, index) in actionStack"
 				:key="index"
 				data-test="action"

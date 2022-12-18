@@ -20,16 +20,16 @@
 				Error fetching posts :(
 			</span>
 		</div>
-		<div v-else class="flex gap-40">
+		<div v-else class="flex flex-col lg:flex-row lg:gap-20">
 			<PostsList
 				v-model:posts="posts"
 				v-model:action-stack="actionStack"
-				class="w-1/2"
+				class="lg:w-1/2"
 			/>
 			<ActionsHistory
 				v-model:posts="posts"
 				v-model:action-stack="actionStack"
-				class="w-1/2 h-fit"
+				class="lg:w-1/2 h-fit"
 			/>
 		</div>
 	</div>
