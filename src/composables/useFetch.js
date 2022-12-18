@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 
 //composable to manage data/error/loading states for requests
-//takes in a url and a fetch() config object as parameters
+//takes in a url and a fetcher function
 export function useFetch(fetcher) {
 	const data = ref(null);
 	const error = ref(null);
